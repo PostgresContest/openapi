@@ -1,0 +1,100 @@
+openapi: 3.0.1
+
+info:
+  title: API for PostgresContest
+  version: 1.0.0
+  description: This declaration contains all API methods for PostgresContest Project
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        $ref: '#/components/requestBodies/LoginRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/LoginResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
+  /user:
+    get:
+      tags:
+        - user
+      responses:
+        200:
+          $ref: '#/components/responses/UserResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
+components:
+  schemas:
+    Error:
+      type: object
+      required: [ code, message ]
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+    Jwt:
+      type: object
+      required: [ token ]
+      properties:
+        token:
+          type: string
+
+    User:
+      type: object
+      required: [ id,first_name,last_name,login ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        login:
+          type: string
+
+    LoginBody:
+      type: object
+      required: [ login, password ]
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+
+  responses:
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    LoginResponse:
+      description: Auth login response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Jwt'
+
+    UserResponse:
+      description: UserResponse.yaml response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+
+  requestBodies:
+    LoginRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginBody'
