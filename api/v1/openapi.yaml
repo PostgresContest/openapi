@@ -20,6 +20,8 @@ paths:
 
   /user:
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - user
       responses:
@@ -98,3 +100,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/LoginBody'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
