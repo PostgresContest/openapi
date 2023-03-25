@@ -14,6 +14,8 @@ import (
 
 // SecurityHandler is handler for security parameters.
 type SecurityHandler interface {
+	// HandleBearerAdminAuth handles bearerAdminAuth security.
+	HandleBearerAdminAuth(ctx context.Context, operationName string, t BearerAdminAuth) (context.Context, error)
 	// HandleBearerAuth handles bearerAuth security.
 	HandleBearerAuth(ctx context.Context, operationName string, t BearerAuth) (context.Context, error)
 }
@@ -33,6 +35,19 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 	return "", false
 }
 
+func (s *Server) securityBearerAdminAuth(ctx context.Context, operationName string, req *http.Request) (context.Context, bool, error) {
+	var t BearerAdminAuth
+	token, ok := findAuthorization(req.Header, "Bearer")
+	if !ok {
+		return ctx, false, nil
+	}
+	t.Token = token
+	rctx, err := s.sec.HandleBearerAdminAuth(ctx, operationName, t)
+	if err != nil {
+		return nil, false, err
+	}
+	return rctx, true, err
+}
 func (s *Server) securityBearerAuth(ctx context.Context, operationName string, req *http.Request) (context.Context, bool, error) {
 	var t BearerAuth
 	token, ok := findAuthorization(req.Header, "Bearer")
@@ -49,10 +64,23 @@ func (s *Server) securityBearerAuth(ctx context.Context, operationName string, r
 
 // SecuritySource is provider of security values (tokens, passwords, etc.).
 type SecuritySource interface {
+	// BearerAdminAuth provides bearerAdminAuth security value.
+	BearerAdminAuth(ctx context.Context, operationName string) (BearerAdminAuth, error)
 	// BearerAuth provides bearerAuth security value.
 	BearerAuth(ctx context.Context, operationName string) (BearerAuth, error)
 }
 
+func (s *Client) securityBearerAdminAuth(ctx context.Context, operationName string, req *http.Request) error {
+	t, err := s.sec.BearerAdminAuth(ctx, operationName)
+	if err != nil {
+		if errors.Is(err, ogenerrors.ErrSkipClientSecurity) {
+			return ogenerrors.ErrSkipClientSecurity
+		}
+		return errors.Wrap(err, "security source \"BearerAdminAuth\"")
+	}
+	req.Header.Set("Authorization", "Bearer "+t.Token)
+	return nil
+}
 func (s *Client) securityBearerAuth(ctx context.Context, operationName string, req *http.Request) error {
 	t, err := s.sec.BearerAuth(ctx, operationName)
 	if err != nil {

@@ -72,6 +72,24 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					return
 				}
+			case 't': // Prefix: "task"
+				if l := len("task"); len(elem) >= l && elem[0:l] == "task" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleTaskPostRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
 			case 'u': // Prefix: "user"
 				if l := len("user"); len(elem) >= l && elem[0:l] == "user" {
 					elem = elem[l:]
@@ -185,6 +203,27 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = "AuthLoginPost"
 						r.operationID = ""
 						r.pathPattern = "/auth/login"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+			case 't': // Prefix: "task"
+				if l := len("task"); len(elem) >= l && elem[0:l] == "task" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "POST":
+						// Leaf: TaskPost
+						r.name = "TaskPost"
+						r.operationID = ""
+						r.pathPattern = "/task"
 						r.args = args
 						r.count = 0
 						return r, true

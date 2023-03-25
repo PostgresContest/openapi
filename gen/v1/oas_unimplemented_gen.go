@@ -16,7 +16,14 @@ var _ Handler = UnimplementedHandler{}
 // AuthLoginPost implements POST /auth/login operation.
 //
 // POST /auth/login
-func (UnimplementedHandler) AuthLoginPost(ctx context.Context, req *LoginBody) (r *Jwt, _ error) {
+func (UnimplementedHandler) AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (r *Jwt, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// TaskPost implements POST /task operation.
+//
+// POST /task
+func (UnimplementedHandler) TaskPost(ctx context.Context, req OptTaskPostReq) (r *Task, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

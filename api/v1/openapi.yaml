@@ -30,6 +30,20 @@ paths:
         default:
           $ref: '#/components/responses/ErrorResponse'
 
+  /task:
+    post:
+      security:
+        - bearerAdminAuth: [ ]
+      tags:
+        - Task
+      requestBody:
+        $ref: '#/components/requestBodies/TaskCreateRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/TaskCreateResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
 components:
   schemas:
     Error:
@@ -62,14 +76,36 @@ components:
         login:
           type: string
 
-    LoginBody:
+    Query:
       type: object
-      required: [ login, password ]
+      required: [ id,query_row,query_hash,response_raw,response_hash ]
       properties:
-        login:
+        id:
+          type: integer
+          format: int64
+        query_row:
           type: string
-        password:
+        query_hash:
           type: string
+        response_raw:
+          type: string
+        response_hash:
+          type: string
+
+    Task:
+      type: object
+      required: [ id, name,description ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        query:
+          $ref: '#/components/schemas/Query'
+
 
   responses:
     ErrorResponse:
@@ -87,11 +123,18 @@ components:
             $ref: '#/components/schemas/Jwt'
 
     UserResponse:
-      description: UserResponse.yaml response
+      description: UserResponse response
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/User'
+
+    TaskCreateResponse:
+      description: Task create response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
 
   requestBodies:
     LoginRequest:
@@ -99,10 +142,35 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/LoginBody'
+            type: object
+            required: [ login, password ]
+            properties:
+              login:
+                type: string
+              password:
+                type: string
+
+    TaskCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [ name,description,query_raw ]
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              query_raw:
+                type: string
 
   securitySchemes:
     bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    bearerAdminAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT

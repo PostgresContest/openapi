@@ -11,7 +11,11 @@ type Handler interface {
 	// AuthLoginPost implements POST /auth/login operation.
 	//
 	// POST /auth/login
-	AuthLoginPost(ctx context.Context, req *LoginBody) (*Jwt, error)
+	AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (*Jwt, error)
+	// TaskPost implements POST /task operation.
+	//
+	// POST /task
+	TaskPost(ctx context.Context, req OptTaskPostReq) (*Task, error)
 	// UserGet implements GET /user operation.
 	//
 	// GET /user
