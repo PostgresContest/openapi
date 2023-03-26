@@ -117,7 +117,9 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 
 // Ref: #/components/schemas/Jwt
 type Jwt struct {
-	Token string `json:"token"`
+	Token string    `json:"token"`
+	Exp   OptString `json:"exp"`
+	Role  OptString `json:"role"`
 }
 
 // GetToken returns the value of Token.
@@ -125,9 +127,43 @@ func (s *Jwt) GetToken() string {
 	return s.Token
 }
 
+// GetExp returns the value of Exp.
+func (s *Jwt) GetExp() OptString {
+	return s.Exp
+}
+
+// GetRole returns the value of Role.
+func (s *Jwt) GetRole() OptString {
+	return s.Role
+}
+
 // SetToken sets the value of Token.
 func (s *Jwt) SetToken(val string) {
 	s.Token = val
+}
+
+// SetExp sets the value of Exp.
+func (s *Jwt) SetExp(val OptString) {
+	s.Exp = val
+}
+
+// SetRole sets the value of Role.
+func (s *Jwt) SetRole(val OptString) {
+	s.Role = val
+}
+
+type OkResponse struct {
+	Status OptString `json:"status"`
+}
+
+// GetStatus returns the value of Status.
+func (s *OkResponse) GetStatus() OptString {
+	return s.Status
+}
+
+// SetStatus sets the value of Status.
+func (s *OkResponse) SetStatus(val OptString) {
+	s.Status = val
 }
 
 // NewOptQuery returns new OptQuery with value set to v.
@@ -170,6 +206,52 @@ func (o OptQuery) Get() (v Query, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptQuery) Or(d Query) Query {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
 	if v, ok := o.Get(); ok {
 		return v
 	}

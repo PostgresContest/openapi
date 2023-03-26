@@ -18,6 +18,30 @@ paths:
         default:
           $ref: '#/components/responses/ErrorResponse'
 
+  /auth/verify:
+    get:
+      tags:
+        - Auth
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/OkResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/LoginResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
   /user:
     get:
       security:
@@ -61,6 +85,12 @@ components:
       properties:
         token:
           type: string
+        exp:
+          type: string
+          format: datetime
+        role:
+          type: string
+          example: user
 
     User:
       type: object
@@ -114,6 +144,17 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+
+    OkResponse:
+      description: Ok response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
 
     LoginResponse:
       description: Auth login response
