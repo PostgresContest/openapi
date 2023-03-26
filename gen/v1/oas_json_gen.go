@@ -252,9 +252,16 @@ func (s *Jwt) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *Jwt) encodeFields(e *jx.Encoder) {
 	{
-
-		e.FieldStart("token")
-		e.Str(s.Token)
+		if s.AccessToken.Set {
+			e.FieldStart("access_token")
+			s.AccessToken.Encode(e)
+		}
+	}
+	{
+		if s.RefreshToken.Set {
+			e.FieldStart("refresh_token")
+			s.RefreshToken.Encode(e)
+		}
 	}
 	{
 		if s.Exp.Set {
@@ -270,10 +277,11 @@ func (s *Jwt) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfJwt = [3]string{
-	0: "token",
-	1: "exp",
-	2: "role",
+var jsonFieldsNameOfJwt = [4]string{
+	0: "access_token",
+	1: "refresh_token",
+	2: "exp",
+	3: "role",
 }
 
 // Decode decodes Jwt from json.
@@ -281,21 +289,28 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode Jwt to nil")
 	}
-	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "token":
-			requiredBitSet[0] |= 1 << 0
+		case "access_token":
 			if err := func() error {
-				v, err := d.Str()
-				s.Token = string(v)
-				if err != nil {
+				s.AccessToken.Reset()
+				if err := s.AccessToken.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"token\"")
+				return errors.Wrap(err, "decode field \"access_token\"")
+			}
+		case "refresh_token":
+			if err := func() error {
+				s.RefreshToken.Reset()
+				if err := s.RefreshToken.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"refresh_token\"")
 			}
 		case "exp":
 			if err := func() error {
@@ -323,38 +338,6 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode Jwt")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000001,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfJwt) {
-					name = jsonFieldsNameOfJwt[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
 	}
 
 	return nil

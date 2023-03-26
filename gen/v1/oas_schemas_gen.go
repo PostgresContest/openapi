@@ -117,14 +117,20 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 
 // Ref: #/components/schemas/Jwt
 type Jwt struct {
-	Token string    `json:"token"`
-	Exp   OptString `json:"exp"`
-	Role  OptString `json:"role"`
+	AccessToken  OptString `json:"access_token"`
+	RefreshToken OptString `json:"refresh_token"`
+	Exp          OptString `json:"exp"`
+	Role         OptString `json:"role"`
 }
 
-// GetToken returns the value of Token.
-func (s *Jwt) GetToken() string {
-	return s.Token
+// GetAccessToken returns the value of AccessToken.
+func (s *Jwt) GetAccessToken() OptString {
+	return s.AccessToken
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *Jwt) GetRefreshToken() OptString {
+	return s.RefreshToken
 }
 
 // GetExp returns the value of Exp.
@@ -137,9 +143,14 @@ func (s *Jwt) GetRole() OptString {
 	return s.Role
 }
 
-// SetToken sets the value of Token.
-func (s *Jwt) SetToken(val string) {
-	s.Token = val
+// SetAccessToken sets the value of AccessToken.
+func (s *Jwt) SetAccessToken(val OptString) {
+	s.AccessToken = val
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *Jwt) SetRefreshToken(val OptString) {
+	s.RefreshToken = val
 }
 
 // SetExp sets the value of Exp.

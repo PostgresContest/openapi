@@ -83,7 +83,9 @@ components:
       type: object
       required: [ token ]
       properties:
-        token:
+        access_token:
+          type: string
+        refresh_token:
           type: string
         exp:
           type: string
