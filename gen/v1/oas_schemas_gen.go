@@ -4,6 +4,7 @@ package v1
 
 import (
 	"fmt"
+	"time"
 )
 
 func (s *ErrorStatusCode) Error() string {
@@ -117,10 +118,10 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 
 // Ref: #/components/schemas/Jwt
 type Jwt struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	Exp          string `json:"exp"`
-	Role         string `json:"role"`
+	AccessToken  string    `json:"access_token"`
+	RefreshToken string    `json:"refresh_token"`
+	Exp          time.Time `json:"exp"`
+	Role         string    `json:"role"`
 }
 
 // GetAccessToken returns the value of AccessToken.
@@ -134,7 +135,7 @@ func (s *Jwt) GetRefreshToken() string {
 }
 
 // GetExp returns the value of Exp.
-func (s *Jwt) GetExp() string {
+func (s *Jwt) GetExp() time.Time {
 	return s.Exp
 }
 
@@ -154,7 +155,7 @@ func (s *Jwt) SetRefreshToken(val string) {
 }
 
 // SetExp sets the value of Exp.
-func (s *Jwt) SetExp(val string) {
+func (s *Jwt) SetExp(val time.Time) {
 	s.Exp = val
 }
 

@@ -9,6 +9,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 
+	"github.com/ogen-go/ogen/json"
 	"github.com/ogen-go/ogen/validate"
 )
 
@@ -264,7 +265,7 @@ func (s *Jwt) encodeFields(e *jx.Encoder) {
 	{
 
 		e.FieldStart("exp")
-		e.Str(s.Exp)
+		json.EncodeDateTime(e, s.Exp)
 	}
 	{
 
@@ -316,8 +317,8 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 		case "exp":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := d.Str()
-				s.Exp = string(v)
+				v, err := json.DecodeDateTime(d)
+				s.Exp = v
 				if err != nil {
 					return err
 				}
