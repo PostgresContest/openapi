@@ -89,7 +89,7 @@ components:
           type: string
         exp:
           type: string
-          format: datetime
+          format: date-time
         role:
           type: string
           example: user
