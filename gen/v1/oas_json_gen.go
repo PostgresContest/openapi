@@ -252,28 +252,24 @@ func (s *Jwt) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *Jwt) encodeFields(e *jx.Encoder) {
 	{
-		if s.AccessToken.Set {
-			e.FieldStart("access_token")
-			s.AccessToken.Encode(e)
-		}
+
+		e.FieldStart("access_token")
+		e.Str(s.AccessToken)
 	}
 	{
-		if s.RefreshToken.Set {
-			e.FieldStart("refresh_token")
-			s.RefreshToken.Encode(e)
-		}
+
+		e.FieldStart("refresh_token")
+		e.Str(s.RefreshToken)
 	}
 	{
-		if s.Exp.Set {
-			e.FieldStart("exp")
-			s.Exp.Encode(e)
-		}
+
+		e.FieldStart("exp")
+		e.Str(s.Exp)
 	}
 	{
-		if s.Role.Set {
-			e.FieldStart("role")
-			s.Role.Encode(e)
-		}
+
+		e.FieldStart("role")
+		e.Str(s.Role)
 	}
 }
 
@@ -289,13 +285,16 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode Jwt to nil")
 	}
+	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
 		case "access_token":
+			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				s.AccessToken.Reset()
-				if err := s.AccessToken.Decode(d); err != nil {
+				v, err := d.Str()
+				s.AccessToken = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -303,9 +302,11 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"access_token\"")
 			}
 		case "refresh_token":
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				s.RefreshToken.Reset()
-				if err := s.RefreshToken.Decode(d); err != nil {
+				v, err := d.Str()
+				s.RefreshToken = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -313,9 +314,11 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"refresh_token\"")
 			}
 		case "exp":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				s.Exp.Reset()
-				if err := s.Exp.Decode(d); err != nil {
+				v, err := d.Str()
+				s.Exp = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -323,9 +326,11 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"exp\"")
 			}
 		case "role":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.Role.Reset()
-				if err := s.Role.Decode(d); err != nil {
+				v, err := d.Str()
+				s.Role = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -338,6 +343,38 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode Jwt")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00001111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfJwt) {
+					name = jsonFieldsNameOfJwt[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
 	}
 
 	return nil

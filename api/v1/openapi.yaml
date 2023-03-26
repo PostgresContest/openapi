@@ -81,7 +81,7 @@ components:
 
     Jwt:
       type: object
-      required: [ token ]
+      required: [ access_token, refresh_token,exp,role ]
       properties:
         access_token:
           type: string
