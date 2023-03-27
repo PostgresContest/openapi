@@ -197,6 +197,21 @@ func (s *Server) handleAuthRefreshPostRequest(args [0]string, argsEscaped bool, 
 			return
 		}
 	}
+	request, close, err := s.decodeAuthRefreshPostRequest(r)
+	if err != nil {
+		err = &ogenerrors.DecodeRequestError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeRequest", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+	defer func() {
+		if err := close(); err != nil {
+			recordError("CloseRequest", err)
+		}
+	}()
 
 	var response *Jwt
 	if m := s.cfg.Middleware; m != nil {
@@ -204,13 +219,13 @@ func (s *Server) handleAuthRefreshPostRequest(args [0]string, argsEscaped bool, 
 			Context:       ctx,
 			OperationName: "AuthRefreshPost",
 			OperationID:   "",
-			Body:          nil,
+			Body:          request,
 			Params:        middleware.Parameters{},
 			Raw:           r,
 		}
 
 		type (
-			Request  = struct{}
+			Request  = *AuthRefreshPostReq
 			Params   = struct{}
 			Response = *Jwt
 		)
@@ -223,12 +238,12 @@ func (s *Server) handleAuthRefreshPostRequest(args [0]string, argsEscaped bool, 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AuthRefreshPost(ctx)
+				response, err = s.h.AuthRefreshPost(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AuthRefreshPost(ctx)
+		response, err = s.h.AuthRefreshPost(ctx, request)
 	}
 	if err != nil {
 		recordError("Internal", err)

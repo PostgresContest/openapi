@@ -23,7 +23,7 @@ func (UnimplementedHandler) AuthLoginPost(ctx context.Context, req *AuthLoginPos
 // AuthRefreshPost implements POST /auth/refresh operation.
 //
 // POST /auth/refresh
-func (UnimplementedHandler) AuthRefreshPost(ctx context.Context) (r *Jwt, _ error) {
+func (UnimplementedHandler) AuthRefreshPost(ctx context.Context, req *AuthRefreshPostReq) (r *Jwt, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

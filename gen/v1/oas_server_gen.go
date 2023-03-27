@@ -15,7 +15,7 @@ type Handler interface {
 	// AuthRefreshPost implements POST /auth/refresh operation.
 	//
 	// POST /auth/refresh
-	AuthRefreshPost(ctx context.Context) (*Jwt, error)
+	AuthRefreshPost(ctx context.Context, req *AuthRefreshPostReq) (*Jwt, error)
 	// AuthVerifyGet implements GET /auth/verify operation.
 	//
 	// GET /auth/verify

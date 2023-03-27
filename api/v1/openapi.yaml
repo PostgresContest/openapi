@@ -11,7 +11,7 @@ paths:
       tags:
         - Auth
       requestBody:
-        $ref: '#/components/requestBodies/LoginRequest'
+        $ref: '#/components/requestBodies/AuthLoginRequest'
       responses:
         200:
           $ref: '#/components/responses/LoginResponse'
@@ -36,6 +36,8 @@ paths:
         - Auth
       security:
         - bearerAuth: [ ]
+      requestBody:
+        $ref: '#/components/requestBodies/AuthTokenRefreshRequest'
       responses:
         200:
           $ref: '#/components/responses/LoginResponse'
@@ -181,7 +183,7 @@ components:
             $ref: '#/components/schemas/Task'
 
   requestBodies:
-    LoginRequest:
+    AuthLoginRequest:
       required: true
       content:
         application/json:
@@ -193,6 +195,18 @@ components:
                 type: string
               password:
                 type: string
+
+    AuthTokenRefreshRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [ refresh_token ]
+            properties:
+              refresh_token:
+                type: string
+
 
     TaskCreateRequest:
       content:

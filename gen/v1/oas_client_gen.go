@@ -142,13 +142,13 @@ func (c *Client) sendAuthLoginPost(ctx context.Context, request *AuthLoginPostRe
 // AuthRefreshPost invokes POST /auth/refresh operation.
 //
 // POST /auth/refresh
-func (c *Client) AuthRefreshPost(ctx context.Context) (*Jwt, error) {
-	res, err := c.sendAuthRefreshPost(ctx)
+func (c *Client) AuthRefreshPost(ctx context.Context, request *AuthRefreshPostReq) (*Jwt, error) {
+	res, err := c.sendAuthRefreshPost(ctx, request)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendAuthRefreshPost(ctx context.Context) (res *Jwt, err error) {
+func (c *Client) sendAuthRefreshPost(ctx context.Context, request *AuthRefreshPostReq) (res *Jwt, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -186,6 +186,9 @@ func (c *Client) sendAuthRefreshPost(ctx context.Context) (res *Jwt, err error) 
 	r, err := ht.NewRequest(ctx, "POST", u, nil)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAuthRefreshPostRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	{

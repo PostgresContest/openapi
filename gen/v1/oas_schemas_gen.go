@@ -36,6 +36,20 @@ func (s *AuthLoginPostReq) SetPassword(val string) {
 	s.Password = val
 }
 
+type AuthRefreshPostReq struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *AuthRefreshPostReq) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *AuthRefreshPostReq) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
 type BearerAdminAuth struct {
 	Token string
 }
