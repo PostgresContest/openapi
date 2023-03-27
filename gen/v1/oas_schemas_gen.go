@@ -36,20 +36,6 @@ func (s *AuthLoginPostReq) SetPassword(val string) {
 	s.Password = val
 }
 
-type AuthRefreshPostReq struct {
-	RefreshToken string `json:"refresh_token"`
-}
-
-// GetRefreshToken returns the value of RefreshToken.
-func (s *AuthRefreshPostReq) GetRefreshToken() string {
-	return s.RefreshToken
-}
-
-// SetRefreshToken sets the value of RefreshToken.
-func (s *AuthRefreshPostReq) SetRefreshToken(val string) {
-	s.RefreshToken = val
-}
-
 type BearerAdminAuth struct {
 	Token string
 }
@@ -132,20 +118,14 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 
 // Ref: #/components/schemas/Jwt
 type Jwt struct {
-	AccessToken  string    `json:"access_token"`
-	RefreshToken string    `json:"refresh_token"`
-	Exp          time.Time `json:"exp"`
-	Role         string    `json:"role"`
+	AccessToken string    `json:"access_token"`
+	Exp         time.Time `json:"exp"`
+	Role        string    `json:"role"`
 }
 
 // GetAccessToken returns the value of AccessToken.
 func (s *Jwt) GetAccessToken() string {
 	return s.AccessToken
-}
-
-// GetRefreshToken returns the value of RefreshToken.
-func (s *Jwt) GetRefreshToken() string {
-	return s.RefreshToken
 }
 
 // GetExp returns the value of Exp.
@@ -161,11 +141,6 @@ func (s *Jwt) GetRole() string {
 // SetAccessToken sets the value of AccessToken.
 func (s *Jwt) SetAccessToken(val string) {
 	s.AccessToken = val
-}
-
-// SetRefreshToken sets the value of RefreshToken.
-func (s *Jwt) SetRefreshToken(val string) {
-	s.RefreshToken = val
 }
 
 // SetExp sets the value of Exp.

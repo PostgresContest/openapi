@@ -129,103 +129,6 @@ func (s *AuthLoginPostReq) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *AuthRefreshPostReq) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *AuthRefreshPostReq) encodeFields(e *jx.Encoder) {
-	{
-
-		e.FieldStart("refresh_token")
-		e.Str(s.RefreshToken)
-	}
-}
-
-var jsonFieldsNameOfAuthRefreshPostReq = [1]string{
-	0: "refresh_token",
-}
-
-// Decode decodes AuthRefreshPostReq from json.
-func (s *AuthRefreshPostReq) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode AuthRefreshPostReq to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "refresh_token":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Str()
-				s.RefreshToken = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"refresh_token\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode AuthRefreshPostReq")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000001,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfAuthRefreshPostReq) {
-					name = jsonFieldsNameOfAuthRefreshPostReq[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *AuthRefreshPostReq) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *AuthRefreshPostReq) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
 func (s *Error) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -356,11 +259,6 @@ func (s *Jwt) encodeFields(e *jx.Encoder) {
 	}
 	{
 
-		e.FieldStart("refresh_token")
-		e.Str(s.RefreshToken)
-	}
-	{
-
 		e.FieldStart("exp")
 		json.EncodeDateTime(e, s.Exp)
 	}
@@ -371,11 +269,10 @@ func (s *Jwt) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfJwt = [4]string{
+var jsonFieldsNameOfJwt = [3]string{
 	0: "access_token",
-	1: "refresh_token",
-	2: "exp",
-	3: "role",
+	1: "exp",
+	2: "role",
 }
 
 // Decode decodes Jwt from json.
@@ -399,20 +296,8 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"access_token\"")
 			}
-		case "refresh_token":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.RefreshToken = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"refresh_token\"")
-			}
 		case "exp":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.Exp = v
@@ -424,7 +309,7 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"exp\"")
 			}
 		case "role":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				v, err := d.Str()
 				s.Role = string(v)
@@ -445,7 +330,7 @@ func (s *Jwt) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00001111,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

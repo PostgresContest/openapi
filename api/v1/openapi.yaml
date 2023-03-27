@@ -30,20 +30,6 @@ paths:
         default:
           $ref: '#/components/responses/ErrorResponse'
 
-  /auth/refresh:
-    post:
-      tags:
-        - Auth
-      security:
-        - bearerAuth: [ ]
-      requestBody:
-        $ref: '#/components/requestBodies/AuthTokenRefreshRequest'
-      responses:
-        200:
-          $ref: '#/components/responses/LoginResponse'
-        default:
-          $ref: '#/components/responses/ErrorResponse'
-
   /user:
     get:
       security:
@@ -83,11 +69,9 @@ components:
 
     Jwt:
       type: object
-      required: [ access_token, refresh_token,exp,role ]
+      required: [ access_token,exp,role ]
       properties:
         access_token:
-          type: string
-        refresh_token:
           type: string
         exp:
           type: string
@@ -195,18 +179,6 @@ components:
                 type: string
               password:
                 type: string
-
-    AuthTokenRefreshRequest:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            required: [ refresh_token ]
-            properties:
-              refresh_token:
-                type: string
-
 
     TaskCreateRequest:
       content:
