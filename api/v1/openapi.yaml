@@ -104,7 +104,7 @@ components:
 
     Query:
       type: object
-      required: [ id,query_row,query_hash,response_raw,response_hash ]
+      required: [ id,query_row,query_hash,result_raw,result_hash ]
       properties:
         id:
           type: integer
