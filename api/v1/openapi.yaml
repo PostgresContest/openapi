@@ -94,6 +94,14 @@ components:
         login:
           type: string
 
+    FieldDescription:
+      type: object
+      properties:
+        name:
+          type: string
+        datatype:
+          type: string
+
     Query:
       type: object
       required: [ id,query_row,query_hash,response_raw,response_hash ]
@@ -105,10 +113,14 @@ components:
           type: string
         query_hash:
           type: string
-        response_raw:
+        result_raw:
           type: string
-        response_hash:
+        result_hash:
           type: string
+        field_description:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldDescription"
 
     Task:
       type: object

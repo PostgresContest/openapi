@@ -244,6 +244,86 @@ func (s *Error) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *FieldDescription) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *FieldDescription) encodeFields(e *jx.Encoder) {
+	{
+		if s.Name.Set {
+			e.FieldStart("name")
+			s.Name.Encode(e)
+		}
+	}
+	{
+		if s.Datatype.Set {
+			e.FieldStart("datatype")
+			s.Datatype.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfFieldDescription = [2]string{
+	0: "name",
+	1: "datatype",
+}
+
+// Decode decodes FieldDescription from json.
+func (s *FieldDescription) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode FieldDescription to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "name":
+			if err := func() error {
+				s.Name.Reset()
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "datatype":
+			if err := func() error {
+				s.Datatype.Reset()
+				if err := s.Datatype.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"datatype\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode FieldDescription")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *FieldDescription) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *FieldDescription) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *Jwt) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -506,6 +586,41 @@ func (s *OptQuery) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes string as json.
+func (o OptString) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes string from json.
+func (o *OptString) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptString to nil")
+	}
+	o.Set = true
+	v, err := d.Str()
+	if err != nil {
+		return err
+	}
+	o.Value = string(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptString) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptString) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes TaskPostReq as json.
 func (o OptTaskPostReq) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -564,23 +679,36 @@ func (s *Query) encodeFields(e *jx.Encoder) {
 		e.Str(s.QueryHash)
 	}
 	{
-
-		e.FieldStart("response_raw")
-		e.Str(s.ResponseRaw)
+		if s.ResultRaw.Set {
+			e.FieldStart("result_raw")
+			s.ResultRaw.Encode(e)
+		}
 	}
 	{
-
-		e.FieldStart("response_hash")
-		e.Str(s.ResponseHash)
+		if s.ResultHash.Set {
+			e.FieldStart("result_hash")
+			s.ResultHash.Encode(e)
+		}
+	}
+	{
+		if s.FieldDescription != nil {
+			e.FieldStart("field_description")
+			e.ArrStart()
+			for _, elem := range s.FieldDescription {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
 	}
 }
 
-var jsonFieldsNameOfQuery = [5]string{
+var jsonFieldsNameOfQuery = [6]string{
 	0: "id",
 	1: "query_row",
 	2: "query_hash",
-	3: "response_raw",
-	4: "response_hash",
+	3: "result_raw",
+	4: "result_hash",
+	5: "field_description",
 }
 
 // Decode decodes Query from json.
@@ -628,29 +756,42 @@ func (s *Query) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"query_hash\"")
 			}
-		case "response_raw":
-			requiredBitSet[0] |= 1 << 3
+		case "result_raw":
 			if err := func() error {
-				v, err := d.Str()
-				s.ResponseRaw = string(v)
-				if err != nil {
+				s.ResultRaw.Reset()
+				if err := s.ResultRaw.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"response_raw\"")
+				return errors.Wrap(err, "decode field \"result_raw\"")
 			}
-		case "response_hash":
-			requiredBitSet[0] |= 1 << 4
+		case "result_hash":
 			if err := func() error {
-				v, err := d.Str()
-				s.ResponseHash = string(v)
-				if err != nil {
+				s.ResultHash.Reset()
+				if err := s.ResultHash.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"response_hash\"")
+				return errors.Wrap(err, "decode field \"result_hash\"")
+			}
+		case "field_description":
+			if err := func() error {
+				s.FieldDescription = make([]FieldDescription, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem FieldDescription
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.FieldDescription = append(s.FieldDescription, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_description\"")
 			}
 		default:
 			return d.Skip()
@@ -662,7 +803,7 @@ func (s *Query) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011111,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

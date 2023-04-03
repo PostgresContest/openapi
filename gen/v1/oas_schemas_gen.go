@@ -116,6 +116,32 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/FieldDescription
+type FieldDescription struct {
+	Name     OptString `json:"name"`
+	Datatype OptString `json:"datatype"`
+}
+
+// GetName returns the value of Name.
+func (s *FieldDescription) GetName() OptString {
+	return s.Name
+}
+
+// GetDatatype returns the value of Datatype.
+func (s *FieldDescription) GetDatatype() OptString {
+	return s.Datatype
+}
+
+// SetName sets the value of Name.
+func (s *FieldDescription) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetDatatype sets the value of Datatype.
+func (s *FieldDescription) SetDatatype(val OptString) {
+	s.Datatype = val
+}
+
 // Ref: #/components/schemas/Jwt
 type Jwt struct {
 	AccessToken string    `json:"access_token"`
@@ -213,6 +239,52 @@ func (o OptQuery) Or(d Query) Query {
 	return d
 }
 
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptTaskPostReq returns new OptTaskPostReq with value set to v.
 func NewOptTaskPostReq(v TaskPostReq) OptTaskPostReq {
 	return OptTaskPostReq{
@@ -261,11 +333,12 @@ func (o OptTaskPostReq) Or(d TaskPostReq) TaskPostReq {
 
 // Ref: #/components/schemas/Query
 type Query struct {
-	ID           int64  `json:"id"`
-	QueryRow     string `json:"query_row"`
-	QueryHash    string `json:"query_hash"`
-	ResponseRaw  string `json:"response_raw"`
-	ResponseHash string `json:"response_hash"`
+	ID               int64              `json:"id"`
+	QueryRow         string             `json:"query_row"`
+	QueryHash        string             `json:"query_hash"`
+	ResultRaw        OptString          `json:"result_raw"`
+	ResultHash       OptString          `json:"result_hash"`
+	FieldDescription []FieldDescription `json:"field_description"`
 }
 
 // GetID returns the value of ID.
@@ -283,14 +356,19 @@ func (s *Query) GetQueryHash() string {
 	return s.QueryHash
 }
 
-// GetResponseRaw returns the value of ResponseRaw.
-func (s *Query) GetResponseRaw() string {
-	return s.ResponseRaw
+// GetResultRaw returns the value of ResultRaw.
+func (s *Query) GetResultRaw() OptString {
+	return s.ResultRaw
 }
 
-// GetResponseHash returns the value of ResponseHash.
-func (s *Query) GetResponseHash() string {
-	return s.ResponseHash
+// GetResultHash returns the value of ResultHash.
+func (s *Query) GetResultHash() OptString {
+	return s.ResultHash
+}
+
+// GetFieldDescription returns the value of FieldDescription.
+func (s *Query) GetFieldDescription() []FieldDescription {
+	return s.FieldDescription
 }
 
 // SetID sets the value of ID.
@@ -308,14 +386,19 @@ func (s *Query) SetQueryHash(val string) {
 	s.QueryHash = val
 }
 
-// SetResponseRaw sets the value of ResponseRaw.
-func (s *Query) SetResponseRaw(val string) {
-	s.ResponseRaw = val
+// SetResultRaw sets the value of ResultRaw.
+func (s *Query) SetResultRaw(val OptString) {
+	s.ResultRaw = val
 }
 
-// SetResponseHash sets the value of ResponseHash.
-func (s *Query) SetResponseHash(val string) {
-	s.ResponseHash = val
+// SetResultHash sets the value of ResultHash.
+func (s *Query) SetResultHash(val OptString) {
+	s.ResultHash = val
+}
+
+// SetFieldDescription sets the value of FieldDescription.
+func (s *Query) SetFieldDescription(val []FieldDescription) {
+	s.FieldDescription = val
 }
 
 // Ref: #/components/schemas/Task
