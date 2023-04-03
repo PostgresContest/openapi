@@ -35,7 +35,7 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - user
+        - User
       responses:
         200:
           $ref: '#/components/responses/UserResponse'
@@ -55,6 +55,75 @@ paths:
           $ref: '#/components/responses/TaskCreateResponse'
         default:
           $ref: '#/components/responses/ErrorResponse'
+
+  /attempt/{attempt_id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Task
+      parameters:
+        - name: attempt_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          $ref: '#/components/responses/AttemptResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+  /tasks:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Task
+      responses:
+        200:
+          $ref: '#/components/responses/TasksResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
+  /task/{task_id}/attempts:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Task
+      responses:
+        200:
+          $ref: '#/components/responses/AttemptsResponse'
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+  /task/{task_id}/attempt:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Task
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: '#/components/requestBodies/AttemptCreateRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/AttemptResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
 
 components:
   schemas:
@@ -124,7 +193,7 @@ components:
 
     Task:
       type: object
-      required: [ id, name,description ]
+      required: [ id, name, description ]
       properties:
         id:
           type: integer
@@ -135,7 +204,20 @@ components:
           type: string
         query:
           $ref: '#/components/schemas/Query'
+        last_attempt:
+          $ref: '#/components/schemas/Attempt'
 
+    Attempt:
+      type: object
+      required: [ id, accepted ]
+      properties:
+        id:
+          type: integer
+          format: int64
+        accepted:
+          type: boolean
+        query:
+          $ref: '#/components/schemas/Query'
 
   responses:
     ErrorResponse:
@@ -178,6 +260,30 @@ components:
           schema:
             $ref: '#/components/schemas/Task'
 
+
+    TasksResponse:
+      description: Tasks response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
+
+    AttemptResponse:
+      description: Attempt response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Attempt'
+
+    AttemptsResponse:
+      description: Attempts response
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Attempt'
+
   requestBodies:
     AuthLoginRequest:
       required: true
@@ -203,6 +309,16 @@ components:
                 type: string
               description:
                 type: string
+              query_raw:
+                type: string
+
+    AttemptCreateRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [ query_raw ]
+            properties:
               query_raw:
                 type: string
 

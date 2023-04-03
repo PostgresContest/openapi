@@ -3,13 +3,48 @@
 package v1
 
 import (
-	"fmt"
 	"time"
 )
 
-func (s *ErrorStatusCode) Error() string {
-	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+// Ref: #/components/schemas/Attempt
+type Attempt struct {
+	ID       int64    `json:"id"`
+	Accepted bool     `json:"accepted"`
+	Query    OptQuery `json:"query"`
 }
+
+// GetID returns the value of ID.
+func (s *Attempt) GetID() int64 {
+	return s.ID
+}
+
+// GetAccepted returns the value of Accepted.
+func (s *Attempt) GetAccepted() bool {
+	return s.Accepted
+}
+
+// GetQuery returns the value of Query.
+func (s *Attempt) GetQuery() OptQuery {
+	return s.Query
+}
+
+// SetID sets the value of ID.
+func (s *Attempt) SetID(val int64) {
+	s.ID = val
+}
+
+// SetAccepted sets the value of Accepted.
+func (s *Attempt) SetAccepted(val bool) {
+	s.Accepted = val
+}
+
+// SetQuery sets the value of Query.
+func (s *Attempt) SetQuery(val OptQuery) {
+	s.Query = val
+}
+
+func (*Attempt) attemptAttemptIDGetRes()   {}
+func (*Attempt) taskTaskIDAttemptPostRes() {}
 
 type AuthLoginPostReq struct {
 	Login    string `json:"login"`
@@ -116,6 +151,14 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
+func (*ErrorStatusCode) attemptAttemptIDGetRes()   {}
+func (*ErrorStatusCode) authLoginPostRes()         {}
+func (*ErrorStatusCode) authVerifyGetRes()         {}
+func (*ErrorStatusCode) taskPostRes()              {}
+func (*ErrorStatusCode) taskTaskIDAttemptPostRes() {}
+func (*ErrorStatusCode) tasksGetRes()              {}
+func (*ErrorStatusCode) userGetRes()               {}
+
 // Ref: #/components/schemas/FieldDescription
 type FieldDescription struct {
 	Name     OptString `json:"name"`
@@ -179,6 +222,8 @@ func (s *Jwt) SetRole(val string) {
 	s.Role = val
 }
 
+func (*Jwt) authLoginPostRes() {}
+
 type OkResponse struct {
 	Status string `json:"status"`
 }
@@ -191,6 +236,54 @@ func (s *OkResponse) GetStatus() string {
 // SetStatus sets the value of Status.
 func (s *OkResponse) SetStatus(val string) {
 	s.Status = val
+}
+
+func (*OkResponse) authVerifyGetRes() {}
+
+// NewOptAttempt returns new OptAttempt with value set to v.
+func NewOptAttempt(v Attempt) OptAttempt {
+	return OptAttempt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAttempt is optional Attempt.
+type OptAttempt struct {
+	Value Attempt
+	Set   bool
+}
+
+// IsSet returns true if OptAttempt was set.
+func (o OptAttempt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAttempt) Reset() {
+	var v Attempt
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAttempt) SetTo(v Attempt) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAttempt) Get() (v Attempt, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAttempt) Or(d Attempt) Attempt {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptQuery returns new OptQuery with value set to v.
@@ -331,6 +424,52 @@ func (o OptTaskPostReq) Or(d TaskPostReq) TaskPostReq {
 	return d
 }
 
+// NewOptTaskTaskIDAttemptPostReq returns new OptTaskTaskIDAttemptPostReq with value set to v.
+func NewOptTaskTaskIDAttemptPostReq(v TaskTaskIDAttemptPostReq) OptTaskTaskIDAttemptPostReq {
+	return OptTaskTaskIDAttemptPostReq{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptTaskTaskIDAttemptPostReq is optional TaskTaskIDAttemptPostReq.
+type OptTaskTaskIDAttemptPostReq struct {
+	Value TaskTaskIDAttemptPostReq
+	Set   bool
+}
+
+// IsSet returns true if OptTaskTaskIDAttemptPostReq was set.
+func (o OptTaskTaskIDAttemptPostReq) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptTaskTaskIDAttemptPostReq) Reset() {
+	var v TaskTaskIDAttemptPostReq
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptTaskTaskIDAttemptPostReq) SetTo(v TaskTaskIDAttemptPostReq) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptTaskTaskIDAttemptPostReq) Get() (v TaskTaskIDAttemptPostReq, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptTaskTaskIDAttemptPostReq) Or(d TaskTaskIDAttemptPostReq) TaskTaskIDAttemptPostReq {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // Ref: #/components/schemas/Query
 type Query struct {
 	ID               int64              `json:"id"`
@@ -403,10 +542,11 @@ func (s *Query) SetFieldDescription(val []FieldDescription) {
 
 // Ref: #/components/schemas/Task
 type Task struct {
-	ID          int64    `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Query       OptQuery `json:"query"`
+	ID          int64      `json:"id"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Query       OptQuery   `json:"query"`
+	LastAttempt OptAttempt `json:"last_attempt"`
 }
 
 // GetID returns the value of ID.
@@ -429,6 +569,11 @@ func (s *Task) GetQuery() OptQuery {
 	return s.Query
 }
 
+// GetLastAttempt returns the value of LastAttempt.
+func (s *Task) GetLastAttempt() OptAttempt {
+	return s.LastAttempt
+}
+
 // SetID sets the value of ID.
 func (s *Task) SetID(val int64) {
 	s.ID = val
@@ -448,6 +593,14 @@ func (s *Task) SetDescription(val string) {
 func (s *Task) SetQuery(val OptQuery) {
 	s.Query = val
 }
+
+// SetLastAttempt sets the value of LastAttempt.
+func (s *Task) SetLastAttempt(val OptAttempt) {
+	s.LastAttempt = val
+}
+
+func (*Task) taskPostRes() {}
+func (*Task) tasksGetRes() {}
 
 type TaskPostReq struct {
 	Name        string `json:"name"`
@@ -482,6 +635,20 @@ func (s *TaskPostReq) SetDescription(val string) {
 
 // SetQueryRaw sets the value of QueryRaw.
 func (s *TaskPostReq) SetQueryRaw(val string) {
+	s.QueryRaw = val
+}
+
+type TaskTaskIDAttemptPostReq struct {
+	QueryRaw string `json:"query_raw"`
+}
+
+// GetQueryRaw returns the value of QueryRaw.
+func (s *TaskTaskIDAttemptPostReq) GetQueryRaw() string {
+	return s.QueryRaw
+}
+
+// SetQueryRaw sets the value of QueryRaw.
+func (s *TaskTaskIDAttemptPostReq) SetQueryRaw(val string) {
 	s.QueryRaw = val
 }
 
@@ -532,3 +699,5 @@ func (s *User) SetLastName(val string) {
 func (s *User) SetLogin(val string) {
 	s.Login = val
 }
+
+func (*User) userGetRes() {}

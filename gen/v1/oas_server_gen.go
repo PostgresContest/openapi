@@ -8,26 +8,38 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AttemptAttemptIDGet implements GET /attempt/{attempt_id} operation.
+	//
+	// GET /attempt/{attempt_id}
+	AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (AttemptAttemptIDGetRes, error)
 	// AuthLoginPost implements POST /auth/login operation.
 	//
 	// POST /auth/login
-	AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (*Jwt, error)
+	AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (AuthLoginPostRes, error)
 	// AuthVerifyGet implements GET /auth/verify operation.
 	//
 	// GET /auth/verify
-	AuthVerifyGet(ctx context.Context) (*OkResponse, error)
+	AuthVerifyGet(ctx context.Context) (AuthVerifyGetRes, error)
 	// TaskPost implements POST /task operation.
 	//
 	// POST /task
-	TaskPost(ctx context.Context, req OptTaskPostReq) (*Task, error)
+	TaskPost(ctx context.Context, req OptTaskPostReq) (TaskPostRes, error)
+	// TaskTaskIDAttemptPost implements POST /task/{task_id}/attempt operation.
+	//
+	// POST /task/{task_id}/attempt
+	TaskTaskIDAttemptPost(ctx context.Context, req OptTaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error)
+	// TaskTaskIDAttemptsGet implements GET /task/{task_id}/attempts operation.
+	//
+	// GET /task/{task_id}/attempts
+	TaskTaskIDAttemptsGet(ctx context.Context, params TaskTaskIDAttemptsGetParams) ([]Attempt, error)
+	// TasksGet implements GET /tasks operation.
+	//
+	// GET /tasks
+	TasksGet(ctx context.Context) (TasksGetRes, error)
 	// UserGet implements GET /user operation.
 	//
 	// GET /user
-	UserGet(ctx context.Context) (*User, error)
-	// NewError creates *ErrorStatusCode from error returned by handler.
-	//
-	// Used for common default response.
-	NewError(ctx context.Context, err error) *ErrorStatusCode
+	UserGet(ctx context.Context) (UserGetRes, error)
 }
 
 // Server implements http server based on OpenAPI v3 specification and
