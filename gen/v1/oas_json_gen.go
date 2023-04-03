@@ -679,16 +679,14 @@ func (s *Query) encodeFields(e *jx.Encoder) {
 		e.Str(s.QueryHash)
 	}
 	{
-		if s.ResultRaw.Set {
-			e.FieldStart("result_raw")
-			s.ResultRaw.Encode(e)
-		}
+
+		e.FieldStart("result_raw")
+		e.Str(s.ResultRaw)
 	}
 	{
-		if s.ResultHash.Set {
-			e.FieldStart("result_hash")
-			s.ResultHash.Encode(e)
-		}
+
+		e.FieldStart("result_hash")
+		e.Str(s.ResultHash)
 	}
 	{
 		if s.FieldDescription != nil {
@@ -757,9 +755,11 @@ func (s *Query) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"query_hash\"")
 			}
 		case "result_raw":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				s.ResultRaw.Reset()
-				if err := s.ResultRaw.Decode(d); err != nil {
+				v, err := d.Str()
+				s.ResultRaw = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -767,9 +767,11 @@ func (s *Query) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"result_raw\"")
 			}
 		case "result_hash":
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
-				s.ResultHash.Reset()
-				if err := s.ResultHash.Decode(d); err != nil {
+				v, err := d.Str()
+				s.ResultHash = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
@@ -803,7 +805,7 @@ func (s *Query) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000111,
+		0b00011111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
