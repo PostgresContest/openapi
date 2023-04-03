@@ -37,14 +37,14 @@ func (UnimplementedHandler) AuthVerifyGet(ctx context.Context) (r AuthVerifyGetR
 // TaskPost implements POST /task operation.
 //
 // POST /task
-func (UnimplementedHandler) TaskPost(ctx context.Context, req OptTaskPostReq) (r TaskPostRes, _ error) {
+func (UnimplementedHandler) TaskPost(ctx context.Context, req *TaskPostReq) (r TaskPostRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // TaskTaskIDAttemptPost implements POST /task/{task_id}/attempt operation.
 //
 // POST /task/{task_id}/attempt
-func (UnimplementedHandler) TaskTaskIDAttemptPost(ctx context.Context, req OptTaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (r TaskTaskIDAttemptPostRes, _ error) {
+func (UnimplementedHandler) TaskTaskIDAttemptPost(ctx context.Context, req *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (r TaskTaskIDAttemptPostRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

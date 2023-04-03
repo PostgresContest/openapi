@@ -23,11 +23,11 @@ type Handler interface {
 	// TaskPost implements POST /task operation.
 	//
 	// POST /task
-	TaskPost(ctx context.Context, req OptTaskPostReq) (TaskPostRes, error)
+	TaskPost(ctx context.Context, req *TaskPostReq) (TaskPostRes, error)
 	// TaskTaskIDAttemptPost implements POST /task/{task_id}/attempt operation.
 	//
 	// POST /task/{task_id}/attempt
-	TaskTaskIDAttemptPost(ctx context.Context, req OptTaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error)
+	TaskTaskIDAttemptPost(ctx context.Context, req *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error)
 	// TaskTaskIDAttemptsGet implements GET /task/{task_id}/attempts operation.
 	//
 	// GET /task/{task_id}/attempts

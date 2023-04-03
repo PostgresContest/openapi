@@ -26,19 +26,13 @@ func encodeAuthLoginPostRequest(
 }
 
 func encodeTaskPostRequest(
-	req OptTaskPostReq,
+	req *TaskPostReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
-	if !req.Set {
-		// Keep request with empty body if value is not set.
-		return nil
-	}
 	e := jx.GetEncoder()
 	{
-		if req.Set {
-			req.Encode(e)
-		}
+		req.Encode(e)
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
@@ -46,19 +40,13 @@ func encodeTaskPostRequest(
 }
 
 func encodeTaskTaskIDAttemptPostRequest(
-	req OptTaskTaskIDAttemptPostReq,
+	req *TaskTaskIDAttemptPostReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
-	if !req.Set {
-		// Keep request with empty body if value is not set.
-		return nil
-	}
 	e := jx.GetEncoder()
 	{
-		if req.Set {
-			req.Encode(e)
-		}
+		req.Encode(e)
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)

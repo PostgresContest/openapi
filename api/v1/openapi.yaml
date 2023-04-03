@@ -301,6 +301,7 @@ components:
                 type: string
 
     TaskCreateRequest:
+      required: true
       content:
         application/json:
           schema:
@@ -315,6 +316,7 @@ components:
                 type: string
 
     AttemptCreateRequest:
+      required: true
       content:
         application/json:
           schema:

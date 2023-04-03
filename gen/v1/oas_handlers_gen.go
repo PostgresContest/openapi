@@ -478,7 +478,7 @@ func (s *Server) handleTaskPostRequest(args [0]string, argsEscaped bool, w http.
 		}
 
 		type (
-			Request  = OptTaskPostReq
+			Request  = *TaskPostReq
 			Params   = struct{}
 			Response = TaskPostRes
 		)
@@ -632,7 +632,7 @@ func (s *Server) handleTaskTaskIDAttemptPostRequest(args [1]string, argsEscaped 
 		}
 
 		type (
-			Request  = OptTaskTaskIDAttemptPostReq
+			Request  = *TaskTaskIDAttemptPostReq
 			Params   = TaskTaskIDAttemptPostParams
 			Response = TaskTaskIDAttemptPostRes
 		)

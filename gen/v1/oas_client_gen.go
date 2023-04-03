@@ -353,13 +353,13 @@ func (c *Client) sendAuthVerifyGet(ctx context.Context) (res AuthVerifyGetRes, e
 // TaskPost invokes POST /task operation.
 //
 // POST /task
-func (c *Client) TaskPost(ctx context.Context, request OptTaskPostReq) (TaskPostRes, error) {
+func (c *Client) TaskPost(ctx context.Context, request *TaskPostReq) (TaskPostRes, error) {
 	res, err := c.sendTaskPost(ctx, request)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendTaskPost(ctx context.Context, request OptTaskPostReq) (res TaskPostRes, err error) {
+func (c *Client) sendTaskPost(ctx context.Context, request *TaskPostReq) (res TaskPostRes, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -454,13 +454,13 @@ func (c *Client) sendTaskPost(ctx context.Context, request OptTaskPostReq) (res 
 // TaskTaskIDAttemptPost invokes POST /task/{task_id}/attempt operation.
 //
 // POST /task/{task_id}/attempt
-func (c *Client) TaskTaskIDAttemptPost(ctx context.Context, request OptTaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error) {
+func (c *Client) TaskTaskIDAttemptPost(ctx context.Context, request *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error) {
 	res, err := c.sendTaskTaskIDAttemptPost(ctx, request, params)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendTaskTaskIDAttemptPost(ctx context.Context, request OptTaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (res TaskTaskIDAttemptPostRes, err error) {
+func (c *Client) sendTaskTaskIDAttemptPost(ctx context.Context, request *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (res TaskTaskIDAttemptPostRes, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
