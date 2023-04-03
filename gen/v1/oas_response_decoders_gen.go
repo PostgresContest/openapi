@@ -464,7 +464,7 @@ func decodeTasksGetResponse(resp *http.Response) (res TasksGetRes, err error) {
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response Task
+			var response TasksGetOKApplicationJSON
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

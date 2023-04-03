@@ -600,7 +600,6 @@ func (s *Task) SetLastAttempt(val OptAttempt) {
 }
 
 func (*Task) taskPostRes() {}
-func (*Task) tasksGetRes() {}
 
 type TaskPostReq struct {
 	Name        string `json:"name"`
@@ -651,6 +650,10 @@ func (s *TaskTaskIDAttemptPostReq) GetQueryRaw() string {
 func (s *TaskTaskIDAttemptPostReq) SetQueryRaw(val string) {
 	s.QueryRaw = val
 }
+
+type TasksGetOKApplicationJSON []Task
+
+func (*TasksGetOKApplicationJSON) tasksGetRes() {}
 
 // Ref: #/components/schemas/User
 type User struct {
