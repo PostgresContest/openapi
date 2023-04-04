@@ -1,0 +1,1 @@
+export * from 'ts-gen/v1/index'

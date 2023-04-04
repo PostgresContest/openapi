@@ -16,35 +16,35 @@ var _ Handler = UnimplementedHandler{}
 // AttemptAttemptIDGet implements GET /attempt/{attempt_id} operation.
 //
 // GET /attempt/{attempt_id}
-func (UnimplementedHandler) AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (r AttemptAttemptIDGetRes, _ error) {
+func (UnimplementedHandler) AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (r *Attempt, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AuthLoginPost implements POST /auth/login operation.
 //
 // POST /auth/login
-func (UnimplementedHandler) AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (r AuthLoginPostRes, _ error) {
+func (UnimplementedHandler) AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (r *Jwt, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AuthVerifyGet implements GET /auth/verify operation.
 //
 // GET /auth/verify
-func (UnimplementedHandler) AuthVerifyGet(ctx context.Context) (r AuthVerifyGetRes, _ error) {
+func (UnimplementedHandler) AuthVerifyGet(ctx context.Context) (r *OkResponse, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // TaskPost implements POST /task operation.
 //
 // POST /task
-func (UnimplementedHandler) TaskPost(ctx context.Context, req *TaskPostReq) (r TaskPostRes, _ error) {
+func (UnimplementedHandler) TaskPost(ctx context.Context, req *TaskPostReq) (r *Task, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // TaskTaskIDAttemptPost implements POST /task/{task_id}/attempt operation.
 //
 // POST /task/{task_id}/attempt
-func (UnimplementedHandler) TaskTaskIDAttemptPost(ctx context.Context, req *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (r TaskTaskIDAttemptPostRes, _ error) {
+func (UnimplementedHandler) TaskTaskIDAttemptPost(ctx context.Context, req *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (r *Attempt, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -58,13 +58,21 @@ func (UnimplementedHandler) TaskTaskIDAttemptsGet(ctx context.Context, params Ta
 // TasksGet implements GET /tasks operation.
 //
 // GET /tasks
-func (UnimplementedHandler) TasksGet(ctx context.Context) (r TasksGetRes, _ error) {
+func (UnimplementedHandler) TasksGet(ctx context.Context) (r []Task, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // UserGet implements GET /user operation.
 //
 // GET /user
-func (UnimplementedHandler) UserGet(ctx context.Context) (r UserGetRes, _ error) {
+func (UnimplementedHandler) UserGet(ctx context.Context) (r *User, _ error) {
 	return r, ht.ErrNotImplemented
+}
+
+// NewError creates *ErrStatusCode from error returned by handler.
+//
+// Used for common default response.
+func (UnimplementedHandler) NewError(ctx context.Context, err error) (r *ErrStatusCode) {
+	r = new(ErrStatusCode)
+	return r
 }

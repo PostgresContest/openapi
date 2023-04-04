@@ -24,8 +24,12 @@ type Client struct {
 	sec       SecuritySource
 	baseClient
 }
+type errorHandler interface {
+	NewError(ctx context.Context, err error) *ErrStatusCode
+}
 
 var _ Handler = struct {
+	errorHandler
 	*Client
 }{}
 
@@ -71,13 +75,13 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // AttemptAttemptIDGet invokes GET /attempt/{attempt_id} operation.
 //
 // GET /attempt/{attempt_id}
-func (c *Client) AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (AttemptAttemptIDGetRes, error) {
+func (c *Client) AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (*Attempt, error) {
 	res, err := c.sendAttemptAttemptIDGet(ctx, params)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendAttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (res AttemptAttemptIDGetRes, err error) {
+func (c *Client) sendAttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (res *Attempt, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -187,13 +191,13 @@ func (c *Client) sendAttemptAttemptIDGet(ctx context.Context, params AttemptAtte
 // AuthLoginPost invokes POST /auth/login operation.
 //
 // POST /auth/login
-func (c *Client) AuthLoginPost(ctx context.Context, request *AuthLoginPostReq) (AuthLoginPostRes, error) {
+func (c *Client) AuthLoginPost(ctx context.Context, request *AuthLoginPostReq) (*Jwt, error) {
 	res, err := c.sendAuthLoginPost(ctx, request)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendAuthLoginPost(ctx context.Context, request *AuthLoginPostReq) (res AuthLoginPostRes, err error) {
+func (c *Client) sendAuthLoginPost(ctx context.Context, request *AuthLoginPostReq) (res *Jwt, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -255,13 +259,13 @@ func (c *Client) sendAuthLoginPost(ctx context.Context, request *AuthLoginPostRe
 // AuthVerifyGet invokes GET /auth/verify operation.
 //
 // GET /auth/verify
-func (c *Client) AuthVerifyGet(ctx context.Context) (AuthVerifyGetRes, error) {
+func (c *Client) AuthVerifyGet(ctx context.Context) (*OkResponse, error) {
 	res, err := c.sendAuthVerifyGet(ctx)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendAuthVerifyGet(ctx context.Context) (res AuthVerifyGetRes, err error) {
+func (c *Client) sendAuthVerifyGet(ctx context.Context) (res *OkResponse, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -353,13 +357,13 @@ func (c *Client) sendAuthVerifyGet(ctx context.Context) (res AuthVerifyGetRes, e
 // TaskPost invokes POST /task operation.
 //
 // POST /task
-func (c *Client) TaskPost(ctx context.Context, request *TaskPostReq) (TaskPostRes, error) {
+func (c *Client) TaskPost(ctx context.Context, request *TaskPostReq) (*Task, error) {
 	res, err := c.sendTaskPost(ctx, request)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendTaskPost(ctx context.Context, request *TaskPostReq) (res TaskPostRes, err error) {
+func (c *Client) sendTaskPost(ctx context.Context, request *TaskPostReq) (res *Task, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -454,13 +458,13 @@ func (c *Client) sendTaskPost(ctx context.Context, request *TaskPostReq) (res Ta
 // TaskTaskIDAttemptPost invokes POST /task/{task_id}/attempt operation.
 //
 // POST /task/{task_id}/attempt
-func (c *Client) TaskTaskIDAttemptPost(ctx context.Context, request *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error) {
+func (c *Client) TaskTaskIDAttemptPost(ctx context.Context, request *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (*Attempt, error) {
 	res, err := c.sendTaskTaskIDAttemptPost(ctx, request, params)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendTaskTaskIDAttemptPost(ctx context.Context, request *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (res TaskTaskIDAttemptPostRes, err error) {
+func (c *Client) sendTaskTaskIDAttemptPost(ctx context.Context, request *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (res *Attempt, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -691,13 +695,13 @@ func (c *Client) sendTaskTaskIDAttemptsGet(ctx context.Context, params TaskTaskI
 // TasksGet invokes GET /tasks operation.
 //
 // GET /tasks
-func (c *Client) TasksGet(ctx context.Context) (TasksGetRes, error) {
+func (c *Client) TasksGet(ctx context.Context) ([]Task, error) {
 	res, err := c.sendTasksGet(ctx)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendTasksGet(ctx context.Context) (res TasksGetRes, err error) {
+func (c *Client) sendTasksGet(ctx context.Context) (res []Task, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.
@@ -789,13 +793,13 @@ func (c *Client) sendTasksGet(ctx context.Context) (res TasksGetRes, err error) 
 // UserGet invokes GET /user operation.
 //
 // GET /user
-func (c *Client) UserGet(ctx context.Context) (UserGetRes, error) {
+func (c *Client) UserGet(ctx context.Context) (*User, error) {
 	res, err := c.sendUserGet(ctx)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendUserGet(ctx context.Context) (res UserGetRes, err error) {
+func (c *Client) sendUserGet(ctx context.Context) (res *User, err error) {
 	var otelAttrs []attribute.KeyValue
 
 	// Run stopwatch.

@@ -7,9 +7,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-faster/errors"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 
+	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/ogen-go/ogen/ogenerrors"
 )
@@ -103,7 +105,7 @@ func (s *Server) handleAttemptAttemptIDGetRequest(args [1]string, argsEscaped bo
 		return
 	}
 
-	var response AttemptAttemptIDGetRes
+	var response *Attempt
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -122,7 +124,7 @@ func (s *Server) handleAttemptAttemptIDGetRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = AttemptAttemptIDGetParams
-			Response = AttemptAttemptIDGetRes
+			Response = *Attempt
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -142,7 +144,15 @@ func (s *Server) handleAttemptAttemptIDGetRequest(args [1]string, argsEscaped bo
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -203,7 +213,7 @@ func (s *Server) handleAuthLoginPostRequest(args [0]string, argsEscaped bool, w 
 		}
 	}()
 
-	var response AuthLoginPostRes
+	var response *Jwt
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -217,7 +227,7 @@ func (s *Server) handleAuthLoginPostRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = *AuthLoginPostReq
 			Params   = struct{}
-			Response = AuthLoginPostRes
+			Response = *Jwt
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -237,7 +247,15 @@ func (s *Server) handleAuthLoginPostRequest(args [0]string, argsEscaped bool, w 
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -327,7 +345,7 @@ func (s *Server) handleAuthVerifyGetRequest(args [0]string, argsEscaped bool, w 
 		}
 	}
 
-	var response AuthVerifyGetRes
+	var response *OkResponse
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -341,7 +359,7 @@ func (s *Server) handleAuthVerifyGetRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = AuthVerifyGetRes
+			Response = *OkResponse
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -361,7 +379,15 @@ func (s *Server) handleAuthVerifyGetRequest(args [0]string, argsEscaped bool, w 
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -466,7 +492,7 @@ func (s *Server) handleTaskPostRequest(args [0]string, argsEscaped bool, w http.
 		}
 	}()
 
-	var response TaskPostRes
+	var response *Task
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -480,7 +506,7 @@ func (s *Server) handleTaskPostRequest(args [0]string, argsEscaped bool, w http.
 		type (
 			Request  = *TaskPostReq
 			Params   = struct{}
-			Response = TaskPostRes
+			Response = *Task
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -500,7 +526,15 @@ func (s *Server) handleTaskPostRequest(args [0]string, argsEscaped bool, w http.
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -615,7 +649,7 @@ func (s *Server) handleTaskTaskIDAttemptPostRequest(args [1]string, argsEscaped 
 		}
 	}()
 
-	var response TaskTaskIDAttemptPostRes
+	var response *Attempt
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -634,7 +668,7 @@ func (s *Server) handleTaskTaskIDAttemptPostRequest(args [1]string, argsEscaped 
 		type (
 			Request  = *TaskTaskIDAttemptPostReq
 			Params   = TaskTaskIDAttemptPostParams
-			Response = TaskTaskIDAttemptPostRes
+			Response = *Attempt
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -654,7 +688,15 @@ func (s *Server) handleTaskTaskIDAttemptPostRequest(args [1]string, argsEscaped 
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -793,7 +835,15 @@ func (s *Server) handleTaskTaskIDAttemptsGetRequest(args [1]string, argsEscaped 
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -883,7 +933,7 @@ func (s *Server) handleTasksGetRequest(args [0]string, argsEscaped bool, w http.
 		}
 	}
 
-	var response TasksGetRes
+	var response []Task
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -897,7 +947,7 @@ func (s *Server) handleTasksGetRequest(args [0]string, argsEscaped bool, w http.
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = TasksGetRes
+			Response = []Task
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -917,7 +967,15 @@ func (s *Server) handleTasksGetRequest(args [0]string, argsEscaped bool, w http.
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 
@@ -1007,7 +1065,7 @@ func (s *Server) handleUserGetRequest(args [0]string, argsEscaped bool, w http.R
 		}
 	}
 
-	var response UserGetRes
+	var response *User
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
@@ -1021,7 +1079,7 @@ func (s *Server) handleUserGetRequest(args [0]string, argsEscaped bool, w http.R
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = UserGetRes
+			Response = *User
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1041,7 +1099,15 @@ func (s *Server) handleUserGetRequest(args [0]string, argsEscaped bool, w http.R
 	}
 	if err != nil {
 		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrStatusCode](err); ok {
+			encodeErrorResponse(errRes, w, span)
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
 		return
 	}
 

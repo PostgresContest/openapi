@@ -11,23 +11,23 @@ type Handler interface {
 	// AttemptAttemptIDGet implements GET /attempt/{attempt_id} operation.
 	//
 	// GET /attempt/{attempt_id}
-	AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (AttemptAttemptIDGetRes, error)
+	AttemptAttemptIDGet(ctx context.Context, params AttemptAttemptIDGetParams) (*Attempt, error)
 	// AuthLoginPost implements POST /auth/login operation.
 	//
 	// POST /auth/login
-	AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (AuthLoginPostRes, error)
+	AuthLoginPost(ctx context.Context, req *AuthLoginPostReq) (*Jwt, error)
 	// AuthVerifyGet implements GET /auth/verify operation.
 	//
 	// GET /auth/verify
-	AuthVerifyGet(ctx context.Context) (AuthVerifyGetRes, error)
+	AuthVerifyGet(ctx context.Context) (*OkResponse, error)
 	// TaskPost implements POST /task operation.
 	//
 	// POST /task
-	TaskPost(ctx context.Context, req *TaskPostReq) (TaskPostRes, error)
+	TaskPost(ctx context.Context, req *TaskPostReq) (*Task, error)
 	// TaskTaskIDAttemptPost implements POST /task/{task_id}/attempt operation.
 	//
 	// POST /task/{task_id}/attempt
-	TaskTaskIDAttemptPost(ctx context.Context, req *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (TaskTaskIDAttemptPostRes, error)
+	TaskTaskIDAttemptPost(ctx context.Context, req *TaskTaskIDAttemptPostReq, params TaskTaskIDAttemptPostParams) (*Attempt, error)
 	// TaskTaskIDAttemptsGet implements GET /task/{task_id}/attempts operation.
 	//
 	// GET /task/{task_id}/attempts
@@ -35,11 +35,15 @@ type Handler interface {
 	// TasksGet implements GET /tasks operation.
 	//
 	// GET /tasks
-	TasksGet(ctx context.Context) (TasksGetRes, error)
+	TasksGet(ctx context.Context) ([]Task, error)
 	// UserGet implements GET /user operation.
 	//
 	// GET /user
-	UserGet(ctx context.Context) (UserGetRes, error)
+	UserGet(ctx context.Context) (*User, error)
+	// NewError creates *ErrStatusCode from error returned by handler.
+	//
+	// Used for common default response.
+	NewError(ctx context.Context, err error) *ErrStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and

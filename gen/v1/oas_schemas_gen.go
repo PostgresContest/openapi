@@ -3,8 +3,13 @@
 package v1
 
 import (
+	"fmt"
 	"time"
 )
+
+func (s *ErrStatusCode) Error() string {
+	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+}
 
 // Ref: #/components/schemas/Attempt
 type Attempt struct {
@@ -42,9 +47,6 @@ func (s *Attempt) SetAccepted(val bool) {
 func (s *Attempt) SetQuery(val OptQuery) {
 	s.Query = val
 }
-
-func (*Attempt) attemptAttemptIDGetRes()   {}
-func (*Attempt) taskTaskIDAttemptPostRes() {}
 
 type AuthLoginPostReq struct {
 	Login    string `json:"login"`
@@ -99,65 +101,57 @@ func (s *BearerAuth) SetToken(val string) {
 	s.Token = val
 }
 
-// Ref: #/components/schemas/Error
-type Error struct {
+// Ref: #/components/schemas/Err
+type Err struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
 // GetCode returns the value of Code.
-func (s *Error) GetCode() int {
+func (s *Err) GetCode() int {
 	return s.Code
 }
 
 // GetMessage returns the value of Message.
-func (s *Error) GetMessage() string {
+func (s *Err) GetMessage() string {
 	return s.Message
 }
 
 // SetCode sets the value of Code.
-func (s *Error) SetCode(val int) {
+func (s *Err) SetCode(val int) {
 	s.Code = val
 }
 
 // SetMessage sets the value of Message.
-func (s *Error) SetMessage(val string) {
+func (s *Err) SetMessage(val string) {
 	s.Message = val
 }
 
-// ErrorStatusCode wraps Error with StatusCode.
-type ErrorStatusCode struct {
+// ErrStatusCode wraps Err with StatusCode.
+type ErrStatusCode struct {
 	StatusCode int
-	Response   Error
+	Response   Err
 }
 
 // GetStatusCode returns the value of StatusCode.
-func (s *ErrorStatusCode) GetStatusCode() int {
+func (s *ErrStatusCode) GetStatusCode() int {
 	return s.StatusCode
 }
 
 // GetResponse returns the value of Response.
-func (s *ErrorStatusCode) GetResponse() Error {
+func (s *ErrStatusCode) GetResponse() Err {
 	return s.Response
 }
 
 // SetStatusCode sets the value of StatusCode.
-func (s *ErrorStatusCode) SetStatusCode(val int) {
+func (s *ErrStatusCode) SetStatusCode(val int) {
 	s.StatusCode = val
 }
 
 // SetResponse sets the value of Response.
-func (s *ErrorStatusCode) SetResponse(val Error) {
+func (s *ErrStatusCode) SetResponse(val Err) {
 	s.Response = val
 }
-
-func (*ErrorStatusCode) attemptAttemptIDGetRes()   {}
-func (*ErrorStatusCode) authLoginPostRes()         {}
-func (*ErrorStatusCode) authVerifyGetRes()         {}
-func (*ErrorStatusCode) taskPostRes()              {}
-func (*ErrorStatusCode) taskTaskIDAttemptPostRes() {}
-func (*ErrorStatusCode) tasksGetRes()              {}
-func (*ErrorStatusCode) userGetRes()               {}
 
 // Ref: #/components/schemas/FieldDescription
 type FieldDescription struct {
@@ -222,8 +216,6 @@ func (s *Jwt) SetRole(val string) {
 	s.Role = val
 }
 
-func (*Jwt) authLoginPostRes() {}
-
 type OkResponse struct {
 	Status string `json:"status"`
 }
@@ -237,8 +229,6 @@ func (s *OkResponse) GetStatus() string {
 func (s *OkResponse) SetStatus(val string) {
 	s.Status = val
 }
-
-func (*OkResponse) authVerifyGetRes() {}
 
 // NewOptAttempt returns new OptAttempt with value set to v.
 func NewOptAttempt(v Attempt) OptAttempt {
@@ -507,8 +497,6 @@ func (s *Task) SetLastAttempt(val OptAttempt) {
 	s.LastAttempt = val
 }
 
-func (*Task) taskPostRes() {}
-
 type TaskPostReq struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -559,10 +547,6 @@ func (s *TaskTaskIDAttemptPostReq) SetQueryRaw(val string) {
 	s.QueryRaw = val
 }
 
-type TasksGetOKApplicationJSON []Task
-
-func (*TasksGetOKApplicationJSON) tasksGetRes() {}
-
 // Ref: #/components/schemas/User
 type User struct {
 	ID        int64  `json:"id"`
@@ -610,5 +594,3 @@ func (s *User) SetLastName(val string) {
 func (s *User) SetLogin(val string) {
 	s.Login = val
 }
-
-func (*User) userGetRes() {}

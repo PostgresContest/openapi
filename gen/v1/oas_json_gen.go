@@ -261,14 +261,14 @@ func (s *AuthLoginPostReq) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *Error) Encode(e *jx.Encoder) {
+func (s *Err) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *Error) encodeFields(e *jx.Encoder) {
+func (s *Err) encodeFields(e *jx.Encoder) {
 	{
 
 		e.FieldStart("code")
@@ -281,15 +281,15 @@ func (s *Error) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfError = [2]string{
+var jsonFieldsNameOfErr = [2]string{
 	0: "code",
 	1: "message",
 }
 
-// Decode decodes Error from json.
-func (s *Error) Decode(d *jx.Decoder) error {
+// Decode decodes Err from json.
+func (s *Err) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode Error to nil")
+		return errors.New("invalid: unable to decode Err to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -324,7 +324,7 @@ func (s *Error) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode Error")
+		return errors.Wrap(err, "decode Err")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -341,8 +341,8 @@ func (s *Error) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfError) {
-					name = jsonFieldsNameOfError[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfErr) {
+					name = jsonFieldsNameOfErr[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -363,14 +363,14 @@ func (s *Error) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *Error) MarshalJSON() ([]byte, error) {
+func (s *Err) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *Error) UnmarshalJSON(data []byte) error {
+func (s *Err) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -1376,56 +1376,6 @@ func (s *TaskTaskIDAttemptPostReq) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *TaskTaskIDAttemptPostReq) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode encodes TasksGetOKApplicationJSON as json.
-func (s TasksGetOKApplicationJSON) Encode(e *jx.Encoder) {
-	unwrapped := []Task(s)
-
-	e.ArrStart()
-	for _, elem := range unwrapped {
-		elem.Encode(e)
-	}
-	e.ArrEnd()
-}
-
-// Decode decodes TasksGetOKApplicationJSON from json.
-func (s *TasksGetOKApplicationJSON) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode TasksGetOKApplicationJSON to nil")
-	}
-	var unwrapped []Task
-	if err := func() error {
-		unwrapped = make([]Task, 0)
-		if err := d.Arr(func(d *jx.Decoder) error {
-			var elem Task
-			if err := elem.Decode(d); err != nil {
-				return err
-			}
-			unwrapped = append(unwrapped, elem)
-			return nil
-		}); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return errors.Wrap(err, "alias")
-	}
-	*s = TasksGetOKApplicationJSON(unwrapped)
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s TasksGetOKApplicationJSON) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *TasksGetOKApplicationJSON) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
