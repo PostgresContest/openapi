@@ -1,1 +1,1 @@
-export {AuthApiFactory, TaskApiFactory, UserApiFactory} from "./ts-gen/v1";
+export * from "./ts-gen/v1";
