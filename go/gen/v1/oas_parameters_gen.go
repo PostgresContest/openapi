@@ -209,3 +209,68 @@ func decodeTaskTaskIDAttemptsGetParams(args [1]string, argsEscaped bool, r *http
 	}
 	return params, nil
 }
+
+// TaskTaskIDGetParams is parameters of GET /task/{task_id} operation.
+type TaskTaskIDGetParams struct {
+	TaskID int64
+}
+
+func unpackTaskTaskIDGetParams(packed middleware.Parameters) (params TaskTaskIDGetParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "task_id",
+			In:   "path",
+		}
+		params.TaskID = packed[key].(int64)
+	}
+	return params
+}
+
+func decodeTaskTaskIDGetParams(args [1]string, argsEscaped bool, r *http.Request) (params TaskTaskIDGetParams, _ error) {
+	// Decode path: task_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "task_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt64(val)
+				if err != nil {
+					return err
+				}
+
+				params.TaskID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "task_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}

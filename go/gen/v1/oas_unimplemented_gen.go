@@ -55,6 +55,13 @@ func (UnimplementedHandler) TaskTaskIDAttemptsGet(ctx context.Context, params Ta
 	return r, ht.ErrNotImplemented
 }
 
+// TaskTaskIDGet implements GET /task/{task_id} operation.
+//
+// GET /task/{task_id}
+func (UnimplementedHandler) TaskTaskIDGet(ctx context.Context, params TaskTaskIDGetParams) (r *Task, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // TasksGet implements GET /tasks operation.
 //
 // GET /tasks

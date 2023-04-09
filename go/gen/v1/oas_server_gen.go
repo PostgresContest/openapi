@@ -32,6 +32,10 @@ type Handler interface {
 	//
 	// GET /task/{task_id}/attempts
 	TaskTaskIDAttemptsGet(ctx context.Context, params TaskTaskIDAttemptsGetParams) ([]Attempt, error)
+	// TaskTaskIDGet implements GET /task/{task_id} operation.
+	//
+	// GET /task/{task_id}
+	TaskTaskIDGet(ctx context.Context, params TaskTaskIDGetParams) (*Task, error)
 	// TasksGet implements GET /tasks operation.
 	//
 	// GET /tasks

@@ -86,6 +86,26 @@ paths:
         default:
           $ref: '#/components/responses/ErrorResponse'
 
+  /task/{task_id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Task
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          $ref: '#/components/responses/TaskResponse'
+        default:
+          $ref: '#/components/responses/ErrorResponse'
+
+
   /task/{task_id}/attempts:
     get:
       security:
@@ -262,6 +282,13 @@ components:
           schema:
             $ref: '#/components/schemas/Task'
 
+
+    TaskResponse:
+      description: Task response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Task'
 
     TasksResponse:
       description: Tasks response

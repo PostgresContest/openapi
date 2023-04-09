@@ -620,6 +620,43 @@ export const TaskApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {number} taskId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskTaskIdGet: async (taskId: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'taskId' is not null or undefined
+            assertParamExists('taskTaskIdGet', 'taskId', taskId)
+            const localVarPath = `/task/{task_id}`
+                .replace(`{${"task_id"}}`, encodeURIComponent(String(taskId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -704,6 +741,16 @@ export const TaskApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} taskId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async taskTaskIdGet(taskId: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Task>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.taskTaskIdGet(taskId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -757,6 +804,15 @@ export const TaskApiFactory = function (configuration?: Configuration, basePath?
          */
         taskTaskIdAttemptsGet(taskId: number, options?: any): AxiosPromise<Array<Attempt>> {
             return localVarFp.taskTaskIdAttemptsGet(taskId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} taskId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskTaskIdGet(taskId: number, options?: any): AxiosPromise<Task> {
+            return localVarFp.taskTaskIdGet(taskId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -819,6 +875,17 @@ export class TaskApi extends BaseAPI {
      */
     public taskTaskIdAttemptsGet(taskId: number, options?: AxiosRequestConfig) {
         return TaskApiFp(this.configuration).taskTaskIdAttemptsGet(taskId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} taskId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TaskApi
+     */
+    public taskTaskIdGet(taskId: number, options?: AxiosRequestConfig) {
+        return TaskApiFp(this.configuration).taskTaskIdGet(taskId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
