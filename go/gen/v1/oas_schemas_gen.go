@@ -103,8 +103,9 @@ func (s *BearerAuth) SetToken(val string) {
 
 // Ref: #/components/schemas/Err
 type Err struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
+	Code                int       `json:"code"`
+	Message             string    `json:"message"`
+	UserReadableMessage OptString `json:"user_readable_message"`
 }
 
 // GetCode returns the value of Code.
@@ -117,6 +118,11 @@ func (s *Err) GetMessage() string {
 	return s.Message
 }
 
+// GetUserReadableMessage returns the value of UserReadableMessage.
+func (s *Err) GetUserReadableMessage() OptString {
+	return s.UserReadableMessage
+}
+
 // SetCode sets the value of Code.
 func (s *Err) SetCode(val int) {
 	s.Code = val
@@ -125,6 +131,11 @@ func (s *Err) SetCode(val int) {
 // SetMessage sets the value of Message.
 func (s *Err) SetMessage(val string) {
 	s.Message = val
+}
+
+// SetUserReadableMessage sets the value of UserReadableMessage.
+func (s *Err) SetUserReadableMessage(val OptString) {
+	s.UserReadableMessage = val
 }
 
 // ErrStatusCode wraps Err with StatusCode.

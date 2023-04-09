@@ -279,11 +279,18 @@ func (s *Err) encodeFields(e *jx.Encoder) {
 		e.FieldStart("message")
 		e.Str(s.Message)
 	}
+	{
+		if s.UserReadableMessage.Set {
+			e.FieldStart("user_readable_message")
+			s.UserReadableMessage.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfErr = [2]string{
+var jsonFieldsNameOfErr = [3]string{
 	0: "code",
 	1: "message",
+	2: "user_readable_message",
 }
 
 // Decode decodes Err from json.
@@ -318,6 +325,16 @@ func (s *Err) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"message\"")
+			}
+		case "user_readable_message":
+			if err := func() error {
+				s.UserReadableMessage.Reset()
+				if err := s.UserReadableMessage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"user_readable_message\"")
 			}
 		default:
 			return d.Skip()

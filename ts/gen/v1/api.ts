@@ -98,6 +98,12 @@ export interface Err {
      * @memberof Err
      */
     'message': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Err
+     */
+    'user_readable_message'?: string;
 }
 /**
  * 

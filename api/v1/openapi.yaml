@@ -157,6 +157,8 @@ components:
           type: integer
         message:
           type: string
+        user_readable_message:
+          type: string
 
     Jwt:
       type: object
