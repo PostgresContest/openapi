@@ -1,1 +1,1 @@
-export * from 'gen/v1/index'
+export * from './gen/v1/index'
