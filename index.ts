@@ -1,1 +1,0 @@
-export * from "./ts-gen/v1";

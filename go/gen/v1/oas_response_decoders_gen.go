@@ -14,7 +14,7 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func decodeAttemptAttemptIDGetResponse(resp *http.Response) (res *Attempt, err error) {
+func decodeAttemptAttemptIDGetResponse(resp *http.Response) (res *Attempt, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -92,12 +92,12 @@ func decodeAttemptAttemptIDGetResponse(resp *http.Response) (res *Attempt, err e
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeAuthLoginPostResponse(resp *http.Response) (res *Jwt, err error) {
+func decodeAuthLoginPostResponse(resp *http.Response) (res *Jwt, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -175,12 +175,12 @@ func decodeAuthLoginPostResponse(resp *http.Response) (res *Jwt, err error) {
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeAuthVerifyGetResponse(resp *http.Response) (res *OkResponse, err error) {
+func decodeAuthVerifyGetResponse(resp *http.Response) (res *OkResponse, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -258,12 +258,12 @@ func decodeAuthVerifyGetResponse(resp *http.Response) (res *OkResponse, err erro
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeTaskPostResponse(resp *http.Response) (res *Task, err error) {
+func decodeTaskPostResponse(resp *http.Response) (res *Task, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -341,12 +341,12 @@ func decodeTaskPostResponse(resp *http.Response) (res *Task, err error) {
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeTaskTaskIDAttemptPostResponse(resp *http.Response) (res *Attempt, err error) {
+func decodeTaskTaskIDAttemptPostResponse(resp *http.Response) (res *Attempt, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -424,12 +424,12 @@ func decodeTaskTaskIDAttemptPostResponse(resp *http.Response) (res *Attempt, err
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeTaskTaskIDAttemptsGetResponse(resp *http.Response) (res []Attempt, err error) {
+func decodeTaskTaskIDAttemptsGetResponse(resp *http.Response) (res []Attempt, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -515,12 +515,12 @@ func decodeTaskTaskIDAttemptsGetResponse(resp *http.Response) (res []Attempt, er
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeTasksGetResponse(resp *http.Response) (res []Task, err error) {
+func decodeTasksGetResponse(resp *http.Response) (res []Task, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -606,12 +606,12 @@ func decodeTasksGetResponse(resp *http.Response) (res []Task, err error) {
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodeUserGetResponse(resp *http.Response) (res *User, err error) {
+func decodeUserGetResponse(resp *http.Response) (res *User, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -689,7 +689,7 @@ func decodeUserGetResponse(resp *http.Response) (res *User, err error) {
 		}
 	}()
 	if err != nil {
-		return res, errors.Wrap(err, "default")
+		return res, errors.Wrapf(err, "default (code %d)", resp.StatusCode)
 	}
 	return res, errors.Wrap(defRes, "error")
 }
