@@ -13,9 +13,10 @@ func (s *ErrStatusCode) Error() string {
 
 // Ref: #/components/schemas/Attempt
 type Attempt struct {
-	ID       int64    `json:"id"`
-	Accepted bool     `json:"accepted"`
-	Query    OptQuery `json:"query"`
+	ID        int64     `json:"id"`
+	Accepted  bool      `json:"accepted"`
+	CreatedAt time.Time `json:"created_at"`
+	Query     OptQuery  `json:"query"`
 }
 
 // GetID returns the value of ID.
@@ -26,6 +27,11 @@ func (s *Attempt) GetID() int64 {
 // GetAccepted returns the value of Accepted.
 func (s *Attempt) GetAccepted() bool {
 	return s.Accepted
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Attempt) GetCreatedAt() time.Time {
+	return s.CreatedAt
 }
 
 // GetQuery returns the value of Query.
@@ -41,6 +47,11 @@ func (s *Attempt) SetID(val int64) {
 // SetAccepted sets the value of Accepted.
 func (s *Attempt) SetAccepted(val bool) {
 	s.Accepted = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Attempt) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
 }
 
 // SetQuery sets the value of Query.

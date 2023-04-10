@@ -43,6 +43,12 @@ export interface Attempt {
     'accepted': boolean;
     /**
      * 
+     * @type {string}
+     * @memberof Attempt
+     */
+    'created_at': string;
+    /**
+     * 
      * @type {Query}
      * @memberof Attempt
      */

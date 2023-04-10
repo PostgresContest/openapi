@@ -233,13 +233,16 @@ components:
 
     Attempt:
       type: object
-      required: [ id, accepted ]
+      required: [ id, accepted, created_at ]
       properties:
         id:
           type: integer
           format: int64
         accepted:
           type: boolean
+        created_at:
+          type: string
+          format: date-time
         query:
           $ref: '#/components/schemas/Query'
 
