@@ -197,7 +197,7 @@ components:
 
     Query:
       type: object
-      required: [ id,query_row,query_hash,result_raw,result_hash ]
+      required: [ id,query_row,query_hash,result,result_hash ]
       properties:
         id:
           type: integer
@@ -206,8 +206,12 @@ components:
           type: string
         query_hash:
           type: string
-        result_raw:
-          type: string
+        result:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
         result_hash:
           type: string
         field_description:

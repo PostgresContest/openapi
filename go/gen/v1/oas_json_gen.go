@@ -847,8 +847,16 @@ func (s *Query) encodeFields(e *jx.Encoder) {
 	}
 	{
 
-		e.FieldStart("result_raw")
-		e.Str(s.ResultRaw)
+		e.FieldStart("result")
+		e.ArrStart()
+		for _, elem := range s.Result {
+			e.ArrStart()
+			for _, elem := range elem {
+				e.Str(elem)
+			}
+			e.ArrEnd()
+		}
+		e.ArrEnd()
 	}
 	{
 
@@ -871,7 +879,7 @@ var jsonFieldsNameOfQuery = [6]string{
 	0: "id",
 	1: "query_row",
 	2: "query_hash",
-	3: "result_raw",
+	3: "result",
 	4: "result_hash",
 	5: "field_description",
 }
@@ -921,17 +929,33 @@ func (s *Query) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"query_hash\"")
 			}
-		case "result_raw":
+		case "result":
 			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				v, err := d.Str()
-				s.ResultRaw = string(v)
-				if err != nil {
+				s.Result = make([][]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem []string
+					elem = make([]string, 0)
+					if err := d.Arr(func(d *jx.Decoder) error {
+						var elemElem string
+						v, err := d.Str()
+						elemElem = string(v)
+						if err != nil {
+							return err
+						}
+						elem = append(elem, elemElem)
+						return nil
+					}); err != nil {
+						return err
+					}
+					s.Result = append(s.Result, elem)
+					return nil
+				}); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"result_raw\"")
+				return errors.Wrap(err, "decode field \"result\"")
 			}
 		case "result_hash":
 			requiredBitSet[0] |= 1 << 4

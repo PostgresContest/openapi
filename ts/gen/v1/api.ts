@@ -181,10 +181,10 @@ export interface Query {
     'query_hash': string;
     /**
      * 
-     * @type {string}
+     * @type {Array<Array<string>>}
      * @memberof Query
      */
-    'result_raw': string;
+    'result': Array<Array<string>>;
     /**
      * 
      * @type {string}

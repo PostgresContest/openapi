@@ -395,7 +395,7 @@ type Query struct {
 	ID               int64              `json:"id"`
 	QueryRow         string             `json:"query_row"`
 	QueryHash        string             `json:"query_hash"`
-	ResultRaw        string             `json:"result_raw"`
+	Result           [][]string         `json:"result"`
 	ResultHash       string             `json:"result_hash"`
 	FieldDescription []FieldDescription `json:"field_description"`
 }
@@ -415,9 +415,9 @@ func (s *Query) GetQueryHash() string {
 	return s.QueryHash
 }
 
-// GetResultRaw returns the value of ResultRaw.
-func (s *Query) GetResultRaw() string {
-	return s.ResultRaw
+// GetResult returns the value of Result.
+func (s *Query) GetResult() [][]string {
+	return s.Result
 }
 
 // GetResultHash returns the value of ResultHash.
@@ -445,9 +445,9 @@ func (s *Query) SetQueryHash(val string) {
 	s.QueryHash = val
 }
 
-// SetResultRaw sets the value of ResultRaw.
-func (s *Query) SetResultRaw(val string) {
-	s.ResultRaw = val
+// SetResult sets the value of Result.
+func (s *Query) SetResult(val [][]string) {
+	s.Result = val
 }
 
 // SetResultHash sets the value of ResultHash.
